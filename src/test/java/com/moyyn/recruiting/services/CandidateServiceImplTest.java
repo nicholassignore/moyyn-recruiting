@@ -1,10 +1,9 @@
 package com.moyyn.recruiting.services;
 
-import com.moyyn.recruiting.controller.ResumeController;
+import com.moyyn.recruiting.controller.CandidateController;
 import com.moyyn.recruiting.model.Candidate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,14 +16,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @SpringBootTest
-class ResumeServiceImplTest {
+class CandidateServiceImplTest {
 
 
     @Autowired
-    ResumeController resumeController;
+    CandidateController candidateController;
 
     @Test
     void saveAttachment() throws Exception {
@@ -43,21 +41,20 @@ class ResumeServiceImplTest {
 
         MockMultipartFile mockFile = new MockMultipartFile(
                 "file", "mickeymouse.pdf", "application/pdf", pdf);
-        Candidate candidate = resumeController.uploadFile(mockFile);
+        Candidate candidate = candidateController.uploadFile(mockFile);
 
         List<String> skills = new ArrayList<>();
         skills.add("java");
         skills.add("spring");
         skills.add("react");
-        Assertions.assertEquals("mickey",candidate.getFirstName());
-        Assertions.assertEquals("mouse",candidate.getLastName());
-        Assertions.assertEquals(true,candidate.getMarried());
-        Assertions.assertEquals(25,candidate.getAge());
-        Assertions.assertEquals(skills,candidate.getSkills());
-        log.info("candidate:{} ",candidate.toString());
+        Assertions.assertEquals("mickey", candidate.getFirstName());
+        Assertions.assertEquals("mouse", candidate.getLastName());
+        Assertions.assertEquals(true, candidate.getMarried());
+        Assertions.assertEquals(25, candidate.getAge());
+        Assertions.assertEquals(skills, candidate.getSkills());
+        log.info("candidate:{} ", candidate);
 
     }
-
 
 
 }

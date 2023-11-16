@@ -2,10 +2,7 @@ package com.moyyn.recruiting.services;
 
 import com.moyyn.recruiting.model.Candidate;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -35,17 +32,17 @@ public class PdfTest {
 
         PDFBoxService pdfService = new PDFBoxService();
         PDDocument document = pdfService.getPersonalDocument(candidate);
-            PDFTextStripper pdfStripper = new PDFTextStripper();
-            String text = pdfStripper.getText(document);
+        PDFTextStripper pdfStripper = new PDFTextStripper();
+        String text = pdfStripper.getText(document);
 
-            document.save("mickeymouse.pdf");
-            log.info("text : {} ", text);
+        document.save("mickeymouse.pdf");
+        log.info("text : {} ", text);
 
-            String expected = "Name: mickey mouse\n" +
-                    "Age: 25\n" +
-                    "Married: true\n" +
-                    "Skills: java,spring,react\n";
-            Assertions.assertEquals(expected, text, "Extracted text was not as expected");
+        String expected = "Name: mickey mouse\n" +
+                "Age: 25\n" +
+                "Married: true\n" +
+                "Skills: java,spring,react\n";
+        Assertions.assertEquals(expected, text, "Extracted text was not as expected");
 
 
     }
@@ -63,17 +60,17 @@ public class PdfTest {
 
         PDFBoxService pdfService = new PDFBoxService();
         Candidate candidate = pdfService.processPDF(pdfBytes);
-        log.info("candidate: {}",candidate);
+        log.info("candidate: {}", candidate);
 
         List<String> skills = new ArrayList<>();
         skills.add("java");
         skills.add("spring");
         skills.add("react");
-        Assertions.assertEquals("mickey",candidate.getFirstName());
-        Assertions.assertEquals("mouse",candidate.getLastName());
-        Assertions.assertEquals(true,candidate.getMarried());
-        Assertions.assertEquals(25,candidate.getAge());
-        Assertions.assertEquals(skills,candidate.getSkills());
+        Assertions.assertEquals("mickey", candidate.getFirstName());
+        Assertions.assertEquals("mouse", candidate.getLastName());
+        Assertions.assertEquals(true, candidate.getMarried());
+        Assertions.assertEquals(25, candidate.getAge());
+        Assertions.assertEquals(skills, candidate.getSkills());
 
     }
 

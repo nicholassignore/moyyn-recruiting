@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -12,14 +13,34 @@
 </div>
 
 <div>
-    <form method="POST" enctype="multipart/form-data" action="http://localhost:8080/">
+    <form action="http://localhost:8080/jackson" enctype="multipart/form-data" method="POST">
         <table>
-            <tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
-            <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
+            <tr>
+                <td>File to upload:</td>
+                <td><input name="file" type="file"/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Upload"/></td>
+            </tr>
         </table>
     </form>
 </div>
 
+<div>
+    <form action="http://localhost:8080/chatgpt" enctype="multipart/form-data" method="POST">
+        <table>
+            <tr>
+                <td>File to upload:</td>
+                <td><input name="file" type="file"/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Upload"/></td>
+            </tr>
+        </table>
+    </form>
+</div>
 
 </body>
 </html>

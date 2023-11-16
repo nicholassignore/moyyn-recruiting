@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class ResumeServiceImpl implements ResumeService {
+public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public Candidate toCandidate(MultipartFile file) throws Exception {
