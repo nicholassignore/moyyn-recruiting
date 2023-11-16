@@ -21,24 +21,57 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 class ResumeControllerTest {
+
     @Autowired
     private MockMvc mvc;
 
-
     @Test
-    public void shouldSaveUploadedFile() throws Exception {
+    public void should_test_jackson_endpoint() throws Exception {
+
+        // file to upload on HTTP
         Path pdfPath = Paths.get("src/test/resources/mickeymouse.pdf");
         byte[] pdf = Files.readAllBytes(pdfPath);
 
         MockMultipartFile mockFile = new MockMultipartFile(
-                "file", "mickeymouse.pdf", "application/pdf", pdf);
-        MvcResult result = this.mvc.perform(multipart("/").file(mockFile))
+                "pdf", "mickeymouse.pdf", "application/pdf", pdf);
+
+        // execute the PST call
+        MvcResult result = this.mvc.perform(multipart("/jackson").file(mockFile))
                 .andExpect(status().isOk()).andReturn();
 
+        // Assert the return
         String content = result.getResponse().getContentAsString();
         log.info(content);
-        Assertions.assertEquals("{\"fileName\":\"file\",\"fileType\":\"application/pdf\",\"firstName\":\"mickey\",\"lastName\":\"mouse\",\"age\":25,\"married\":true,\"skills\":[\"java\",\"spring\",\"react\"]}", content);
+        Assertions.assertEquals("{\"fileName\":\"mickeymouse.pdf\",\"fileType\":\"application/pdf\",\"firstName\":\"mickey\",\"lastName\":\"mouse\",\"age\":25,\"married\":true,\"skills\":[\"java\",\"spring\",\"react\"]}", content);
     }
 
+
+    @Test
+    public void should_test_chatGPT_endpoint() throws Exception {
+
+        // file to upload on HTTP
+        Path pdfPath = Paths.get("src/test/resources/mickeymouse.pdf");
+        byte[] pdf = Files.readAllBytes(pdfPath);
+
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "pdf", "mickeymouse.pdf", "application/pdf", pdf);
+
+        // execute the PST call
+        MvcResult result = this.mvc.perform(multipart("/chatgpt").file(mockFile))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert the return
+        String content = result.getResponse().getContentAsString();
+        log.info(content);
+        Assertions.assertEquals("{\n" +
+                "    \"fileName\": \"mickeymouse.pdf\",\n" +
+                "    \"fileType\": \"application/pdf\",\n" +
+                "    \"firstName\": \"mickey\",\n" +
+                "    \"lastName\": \"mouse\",\n" +
+                "    \"age\": 25,\n" +
+                "    \"married\": true,\n" +
+                "    \"skills\": [\"java\", \"spring\", \"react\"]\n" +
+                "}", content.trim());
+    }
 
 }

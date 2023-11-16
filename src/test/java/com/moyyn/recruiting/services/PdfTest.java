@@ -17,6 +17,8 @@ import java.util.List;
 
 @Slf4j
 public class PdfTest {
+
+    // Create the test PDF
     @Test
     void should_create_pdf() throws IOException {
         Candidate candidate = new Candidate();
@@ -35,7 +37,7 @@ public class PdfTest {
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);
 
-        document.save("mickeymouse.pdf");
+        document.save("src/test/resources/mickeymouse.pdf");
         log.info("text : {} ", text);
 
         String expected = "Name: mickey mouse\n" +
@@ -43,10 +45,9 @@ public class PdfTest {
                 "Married: true\n" +
                 "Skills: java,spring,react\n";
         Assertions.assertEquals(expected, text, "Extracted text was not as expected");
-
-
     }
 
+    // Parse PDF and extract candidate values
     @Test
     public void should_process_pdf_file() throws IOException {
         Path pdfPath = Paths.get("src/test/resources/mickeymouse.pdf");

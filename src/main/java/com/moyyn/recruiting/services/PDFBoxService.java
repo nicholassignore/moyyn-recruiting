@@ -72,8 +72,8 @@ public class PDFBoxService {
     public Candidate processPDF(byte[] pdf) throws IOException {
         try (PDDocument document = PDDocument.load(pdf)) {
 
-            document.getClass();
             Candidate candidate = new Candidate();
+
             if (!document.isEncrypted()) {
 
                 PDFTextStripperByArea stripper = new PDFTextStripperByArea();
@@ -82,10 +82,11 @@ public class PDFBoxService {
                 PDFTextStripper tStripper = new PDFTextStripper();
 
                 String pdfFileInText = tStripper.getText(document);
-                // System.out.println("Text:" + st);
 
-                // split by whitespace
+                // split line by line
                 String[] lines = pdfFileInText.split("\\r?\\n");
+
+                // extract values and put into candidate object
                 for (String line : lines) {
                     log.info("linea: <{}>", line);
                     if (line.startsWith("Name")) {
@@ -104,11 +105,9 @@ public class PDFBoxService {
                         candidate.setSkills(skills);
                     }
                 }
-
             }
             return candidate;
         }
-
     }
 
     private List<String> extractSkills(String line) {
@@ -136,6 +135,4 @@ public class PDFBoxService {
         String[] split = line.split(" ");
         return split[1];
     }
-
-
 }

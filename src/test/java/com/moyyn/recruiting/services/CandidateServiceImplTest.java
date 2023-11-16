@@ -20,19 +20,9 @@ import java.util.List;
 @SpringBootTest
 class CandidateServiceImplTest {
 
-
     @Autowired
     CandidateController candidateController;
 
-    @Test
-    void saveAttachment() throws Exception {
-        MultipartFile mockFile = new MockMultipartFile(
-                "file", "test.txt", "text/plain", "Hello, world!".getBytes());
-
-
-//        assertEquals("test.txt", resume.getFileName());
-//        assertEquals("text/plain", resume.getFileType());
-    }
 
     @Test
     void should_create_candidate() throws Exception {
