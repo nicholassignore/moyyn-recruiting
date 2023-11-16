@@ -13,18 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/files")
 public class ResumeController {
     @Autowired
     private ResumeService resumeService;
 
-    // for uploading the SINGLE file to the database
-    @PostMapping("/single/base")
+    @PostMapping("/")
     public Candidate uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
-
         return resumeService.toCandidate(file);
-
-
     }
 
 }

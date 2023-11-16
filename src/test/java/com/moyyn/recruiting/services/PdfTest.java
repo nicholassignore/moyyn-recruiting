@@ -52,7 +52,7 @@ public class PdfTest {
 
     @Test
     public void should_process_pdf_file() throws IOException {
-        Path pdfPath = Paths.get("mickeymouse.pdf");
+        Path pdfPath = Paths.get("src/test/resources/mickeymouse.pdf");
         byte[] pdf = Files.readAllBytes(pdfPath);
 
         MockMultipartFile mockFile = new MockMultipartFile(
