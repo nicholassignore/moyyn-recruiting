@@ -2,6 +2,7 @@ package com.moyyn.recruiting.services;
 
 import com.moyyn.recruiting.controller.ResumeController;
 import com.moyyn.recruiting.model.Candidate;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+@Slf4j
 @SpringBootTest
 class ResumeServiceImplTest {
 
@@ -52,6 +54,7 @@ class ResumeServiceImplTest {
         Assertions.assertEquals(true,candidate.getMarried());
         Assertions.assertEquals(25,candidate.getAge());
         Assertions.assertEquals(skills,candidate.getSkills());
+        log.info("candidate:{} ",candidate.toString());
 
     }
 
