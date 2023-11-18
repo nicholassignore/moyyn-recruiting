@@ -20,13 +20,16 @@ public class CandidateController {
     private final CandidateService candidateService;
     private final BotService botService;
 
+    // POST http://localhost:8080/jackson
     // rest post that uses Jackson in spring boot to returnt the Candidate json
     @PostMapping("/jackson")
     public Candidate uploadFile(@RequestParam("pdf") MultipartFile pdf) throws Exception {
-        return candidateService.convertPdfToCandidate(pdf);
+        Candidate candidate = candidateService.convertPdfToCandidate(pdf);
+        return candidate;
     }
 
     // rest post that uses Chatgpt  String json
+    // POST http://localhost:8080//chatgpt
     @PostMapping("/chatgpt")
     public String uploadFileChatGpt(@RequestParam("pdf") MultipartFile pdf) throws Exception {
         Candidate candidate = candidateService.convertPdfToCandidate(pdf);

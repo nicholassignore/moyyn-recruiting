@@ -24,6 +24,7 @@ public class PDFBoxService {
     public static final int X = 50;
     private float Y;
 
+    // given candidate ---> creates the PDF document
     public PDDocument getPersonalDocument(Candidate candidate) throws IOException {
         Y = 700;
         PDDocument document = new PDDocument();
@@ -68,7 +69,7 @@ public class PDFBoxService {
         Y += i;
     }
 
-
+    // given PDF ---> crates the Candidate
     public Candidate processPDF(byte[] pdf) throws IOException {
         try (PDDocument document = PDDocument.load(pdf)) {
 
@@ -83,7 +84,7 @@ public class PDFBoxService {
 
                 String pdfFileInText = tStripper.getText(document);
 
-                // split line by line
+                // PDF opened  line by line
                 String[] lines = pdfFileInText.split("\\r?\\n");
 
                 // extract values and put into candidate object
