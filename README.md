@@ -14,7 +14,6 @@ The webapp provides two REST post endpoints to demonstrate the following use-cas
         format a Candidate.java bean
         call chatGPT passing the candidate.toString() value which will return it in JSON format and returned as String to the HTTP post caller
 
-
 ## Code repository
 
     https://github.com/nicholassignore/moyyn-recruiting.git
