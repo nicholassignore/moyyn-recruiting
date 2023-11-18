@@ -1,15 +1,22 @@
 # moyyn-recruiting
 
-The webapp provides two REST post endpoints to demonstrate the following use-cases:
 
-    - http://localhost:8080/jackson to:
-        upload a PDF file, 
+## Architecture
+
+Stacked layer architecture
+
+    HTML
+    Controller : CandidateController.java
+    The webapp provides two REST post endpoints to demonstrate the following use-cases:
+
+    - POST http://localhost:8080/jackson to:
+        upload a PDF file da HTML, 
         extract the values, 
         format a Candidate.java bean
         return it in JSON format by the Jackson library in spring boot
 
-    - http://localhost:8080//chatgpt to:
-        upload a PDF file, 
+    - POST http://localhost:8080//chatgpt to:
+        upload a PDF file da HTML, 
         extract the values, 
         format a Candidate.java bean
         call chatGPT passing the candidate.toString() value which will return it in JSON format and returned as String to the HTTP post caller
