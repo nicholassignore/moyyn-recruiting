@@ -1,6 +1,10 @@
 package com.moyyn.recruiting.services;
 
 import com.moyyn.recruiting.model.Candidate;
+import com.moyyn.recruiting.model.Skill;
+import com.moyyn.recruiting.repositories.CandidateRepository;
+import com.moyyn.recruiting.repositories.SkillRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -14,7 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
 
 @Service
 @Slf4j
@@ -23,6 +30,14 @@ public class PDFBoxService {
     public static final PDFont PLAIN = PDType1Font.HELVETICA;
     public static final int X = 50;
     private float Y;
+
+    private final SkillRepository skillRepository;
+    private final CandidateRepository candidateRepository;
+
+    public PDFBoxService(SkillRepository skillRepository, CandidateRepository candidateRepository) {
+        this.skillRepository = skillRepository;
+        this.candidateRepository = candidateRepository;
+    }
 
     // given candidate ---> creates the PDF document
     public PDDocument getPersonalDocument(Candidate candidate) throws IOException {
@@ -36,8 +51,14 @@ public class PDFBoxService {
         addHeaderAndWrappedText("Name: ", candidate.getFirstName() + " " + candidate.getLastName(), contentStream);
         addHeaderAndWrappedText("Age: ", String.valueOf(candidate.getAge()), contentStream);
         addHeaderAndWrappedText("Married: ", String.valueOf(candidate.getMarried()), contentStream);
-        String joined2 = String.join(",", candidate.getSkills());
-        addHeaderAndWrappedText("Skills: ", joined2, contentStream);
+
+        StringJoiner joiner = new StringJoiner(",");
+        for (Skill skill : candidate.getSkills().stream().toList()) {
+            joiner.add(skill.getName());
+        }
+        String skillsCommaSeparated = joiner.toString();
+
+        addHeaderAndWrappedText("Skills: ", skillsCommaSeparated, contentStream);
 
         contentStream.close();
         return document;
@@ -103,10 +124,18 @@ public class PDFBoxService {
                         candidate.setMarried(married);
                     } else if (line.startsWith("Skills")) {
                         List<String> skills = extractSkills(line);
-                        candidate.setSkills(skills);
+                        Set<Skill> skillSet = new HashSet<>();
+                        for (int i = 0; i < skills.size(); i++) {
+                            int finalI = i;
+                            skillSet.add(
+                                    skillRepository.findByName(skills.get(finalI))
+                                            .orElseGet(() ->  new Skill(skills.get(finalI))));
+                        }
+                        candidate.setSkills(skillSet);
                     }
                 }
             }
+            candidateRepository.save(candidate);
             return candidate;
         }
     }

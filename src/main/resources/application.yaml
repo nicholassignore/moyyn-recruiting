@@ -2,6 +2,24 @@ spring:
   servlet:
     multipart:
       enabled: true
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recruiting
+    username: recruiting
+    password: recruiting
+
+logging:
+  level:
+    org:
+      hibernate:
+        type: trace
 
 openai:
   api:

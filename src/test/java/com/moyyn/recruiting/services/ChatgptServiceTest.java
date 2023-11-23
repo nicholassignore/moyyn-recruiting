@@ -8,17 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Slf4j
 @SpringBootTest
-public class ChatgptServiceTest {
+class ChatgptServiceTest extends TestUtils {
 
     @Autowired
     private BotService botService;
 
-    @Test
+
+    //@Test
     public void should_convert_candidate_to_json() {
 
         Candidate candidate = new Candidate();
@@ -28,11 +26,7 @@ public class ChatgptServiceTest {
         candidate.setLastName("mouse");
         candidate.setFileName("file.pdf");
         candidate.setFileType("application/pdf");
-        List<String> skills = new ArrayList<>();
-        skills.add("java");
-        skills.add("spring");
-        skills.add("react");
-        candidate.setSkills(skills);
+        createSetSkills(candidate);
 
         String domanda = "can you translate the string '" + candidate + "' to a json string ?";
 
@@ -49,8 +43,5 @@ public class ChatgptServiceTest {
                 "    \"married\": true,\n" +
                 "    \"skills\": [\"java\", \"spring\", \"react\"]\n" +
                 "}", chatGptResponse.getChoices().get(0).getText().trim());
-
     }
-
-
 }

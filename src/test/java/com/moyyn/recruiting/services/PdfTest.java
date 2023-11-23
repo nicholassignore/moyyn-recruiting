@@ -1,6 +1,7 @@
 package com.moyyn.recruiting.services;
 
 import com.moyyn.recruiting.model.Candidate;
+import com.moyyn.recruiting.model.Skill;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -12,13 +13,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringJoiner;
 
 @Slf4j
-public class PdfTest {
+class PdfTest extends TestUtils{
 
-    // Create the test PDF
     @Test
     void should_create_pdf() throws IOException {
         Candidate candidate = new Candidate();
@@ -26,11 +27,17 @@ public class PdfTest {
         candidate.setMarried(true);
         candidate.setFirstName("mickey");
         candidate.setLastName("mouse");
-        List<String> skills = new ArrayList<>();
-        skills.add("java");
-        skills.add("spring");
-        skills.add("react");
+        Set<Skill> skills = new HashSet<>();
+        skills.add(new Skill("java"));
+        skills.add(new Skill("spring"));
+        skills.add(new Skill("react"));
         candidate.setSkills(skills);
+
+        StringJoiner joiner = new StringJoiner(",");
+        for (Skill skill : skills.stream().toList()) {
+            joiner.add(skill.getName());
+        }
+        String skillsCommaSeparated = joiner.toString();
 
         PDFBoxService pdfService = new PDFBoxService();
         PDDocument document = pdfService.getPersonalDocument(candidate);
@@ -43,18 +50,91 @@ public class PdfTest {
         String expected = "Name: mickey mouse\n" +
                 "Age: 25\n" +
                 "Married: true\n" +
-                "Skills: java,spring,react\n";
+                "Skills: " +skillsCommaSeparated +"\n";
+
         Assertions.assertEquals(expected, text, "Extracted text was not as expected");
     }
 
-    // Parse PDF and extract candidate values
+
     @Test
-    public void should_process_pdf_file() throws IOException {
-        Path pdfPath = Paths.get("src/test/resources/mickeymouse.pdf");
+    void should_create_goofy_pdf() throws IOException {
+        Candidate candidate = new Candidate();
+        candidate.setAge(25);
+        candidate.setMarried(true);
+        candidate.setFirstName("goofy");
+        candidate.setLastName("goofy");
+        Set<Skill> skills = new HashSet<>();
+        skills.add(new Skill("java"));
+        skills.add(new Skill("spring"));
+        skills.add(new Skill("react"));
+        candidate.setSkills(skills);
+
+        StringJoiner joiner = new StringJoiner(",");
+        for (Skill skill : skills.stream().toList()) {
+            joiner.add(skill.getName());
+        }
+        String skillsCommaSeparated = joiner.toString();
+
+        PDFBoxService pdfService = new PDFBoxService();
+        PDDocument document = pdfService.getPersonalDocument(candidate);
+        PDFTextStripper pdfStripper = new PDFTextStripper();
+        String text = pdfStripper.getText(document);
+
+        document.save("src/test/resources/goofy.pdf");
+        log.info("text : {} ", text);
+
+        String expected = "Name: goofy goofy\n" +
+                "Age: 25\n" +
+                "Married: true\n" +
+                "Skills: " +skillsCommaSeparated +"\n";
+
+        Assertions.assertEquals(expected, text, "Extracted text was not as expected");
+    }
+    /*
+        Parse PDF and extract candidate values
+     */
+    @Test
+    void should_process_pdf_file() throws IOException {
+
+        String first = "src/test/resources/mickeymouse.pdf";
+        String originalFilename = "mickeymouse.pdf";
+
+        Candidate candidate = createCandidateFromFile(first, originalFilename);
+
+        Assertions.assertEquals("mickey", candidate.getFirstName());
+        Assertions.assertEquals("mouse", candidate.getLastName());
+        Assertions.assertEquals(true, candidate.getMarried());
+        Assertions.assertEquals(25, candidate.getAge());
+
+        Set<Skill> skills = candidate.getSkills();
+
+        Assertions.assertEquals(3,skills.size());
+    }
+
+    @Test
+    void should_process_pdf_file_2() throws IOException {
+
+        String first = "src/test/resources/goofy.pdf";
+        String originalFilename = "goofy.pdf";
+
+        Candidate candidate = createCandidateFromFile(first, originalFilename);
+
+        Assertions.assertEquals("goofy", candidate.getFirstName());
+        Assertions.assertEquals("goofy", candidate.getLastName());
+        Assertions.assertEquals(true, candidate.getMarried());
+        Assertions.assertEquals(25, candidate.getAge());
+
+        Set<Skill> skills = candidate.getSkills();
+
+        Assertions.assertEquals(3,skills.size());
+    }
+
+    private static Candidate createCandidateFromFile(String first, String originalFilename) throws IOException {
+        Path pdfPath = Paths.get(first);
         byte[] pdf = Files.readAllBytes(pdfPath);
 
         MockMultipartFile mockFile = new MockMultipartFile(
-                "file", "mickeymouse.pdf", "application/pdf", pdf);
+                "file", originalFilename, "application/pdf", pdf);
         byte[] pdfBytes = mockFile.getBytes();
         String contentType = mockFile.getContentType();
         Assertions.assertEquals("application/pdf", contentType);
@@ -62,17 +142,6 @@ public class PdfTest {
         PDFBoxService pdfService = new PDFBoxService();
         Candidate candidate = pdfService.processPDF(pdfBytes);
         log.info("candidate: {}", candidate);
-
-        List<String> skills = new ArrayList<>();
-        skills.add("java");
-        skills.add("spring");
-        skills.add("react");
-        Assertions.assertEquals("mickey", candidate.getFirstName());
-        Assertions.assertEquals("mouse", candidate.getLastName());
-        Assertions.assertEquals(true, candidate.getMarried());
-        Assertions.assertEquals(25, candidate.getAge());
-        Assertions.assertEquals(skills, candidate.getSkills());
-
+        return candidate;
     }
-
 }

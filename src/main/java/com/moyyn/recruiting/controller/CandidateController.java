@@ -21,7 +21,7 @@ public class CandidateController {
     private final BotService botService;
 
     // POST http://localhost:8080/jackson
-    // rest post that uses Jackson in spring boot to returnt the Candidate json
+    // rest post that uses Jackson in spring boot to return the Candidate json
     @PostMapping("/jackson")
     public Candidate uploadFile(@RequestParam("pdf") MultipartFile pdf) throws Exception {
         Candidate candidate = candidateService.convertPdfToCandidate(pdf);

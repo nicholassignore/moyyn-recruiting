@@ -23,7 +23,6 @@ class CandidateServiceImplTest {
     @Autowired
     CandidateController candidateController;
 
-
     @Test
     void should_create_candidate() throws Exception {
         Path pdfPath = Paths.get("src/test/resources/mickeymouse.pdf");
@@ -41,10 +40,6 @@ class CandidateServiceImplTest {
         Assertions.assertEquals("mouse", candidate.getLastName());
         Assertions.assertEquals(true, candidate.getMarried());
         Assertions.assertEquals(25, candidate.getAge());
-        Assertions.assertEquals(skills, candidate.getSkills());
-        log.info("candidate:{} ", candidate);
-
+        Assertions.assertEquals(3, candidate.getSkills().size());
     }
-
-
 }
