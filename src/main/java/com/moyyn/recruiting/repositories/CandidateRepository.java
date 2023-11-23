@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface CandidateRepository extends JpaRepository<Candidate, Long> {
 
+    // getter
     List<Candidate> findCandidatesById(Long tagId);
 }

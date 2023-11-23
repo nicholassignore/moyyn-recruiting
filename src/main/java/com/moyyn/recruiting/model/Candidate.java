@@ -40,18 +40,18 @@ public class Candidate {
     private Integer age;
     private Boolean married;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
+    // X cross table o join table
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
                     CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
+                    CascadeType.MERGE})
     @JoinTable(name = "candidate_skills",
             joinColumns = { @JoinColumn(name = "candidate_id") },
             inverseJoinColumns = { @JoinColumn(name = "skill_id") })
     private Set<Skill> skills = new HashSet<>();
 
+
     public void addSkill(Skill skill) {
-        this.skills.add(skill);
+        this.skills.add(skill);   //  <---- java
         skill.getCandidates().add(this);
     }
 

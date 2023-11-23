@@ -25,6 +25,7 @@ public class SkillController {
     @Autowired
     private SkillRepository skillRepository;
 
+    // restituisce tutti gli skills
     @GetMapping("/skills")
     public ResponseEntity<List<Skill>> getAllSkills() {
         List<Skill> skills = new ArrayList<Skill>();
@@ -38,6 +39,13 @@ public class SkillController {
         return new ResponseEntity<>(skills, HttpStatus.OK);
     }
 
+    @GetMapping("/bestCandidateByScore")
+    public ResponseEntity<Candidate> getCandidateWithHighestScore(      ) {
+
+    }
+
+
+    // restituisce tutti gli skills di un candidato con ID = candidateId
     @GetMapping("/candidates/{candidateId}/skills")
     public ResponseEntity<List<Skill>> getAllSkillsByCandidateId(@PathVariable(value = "candidateId") Long candidateId) {
         if (!candidateRepository.existsById(candidateId)) {
@@ -68,21 +76,26 @@ public class SkillController {
 
     @PostMapping("/candidates/{candidateId}/skills")
     public ResponseEntity<Skill> addSkill(@PathVariable(value = "candidateId") Long candidateId, @RequestBody Skill skillRequest) {
+
         Skill skill = candidateRepository.findById(candidateId).map(candidate -> {
-            long skillId = skillRequest.getId();
+
+            // ho trovato il candidato con ID = candidateId
+            Long skillId = skillRequest.getId();
 
             // skill is existed
-            if (skillId != 0L) {
+            if (skillId != null &&  skillId != 0L) {
                 Skill _skill = skillRepository.findById(skillId)
                         .orElseThrow(() -> new IllegalArgumentException("Not found Skill with id = " + skillId));
                 candidate.addSkill(_skill);
                 candidateRepository.save(candidate);
                 return _skill;
             }
+            else {
+                // add and create new Skill
+                candidate.addSkill(skillRequest);
+                return skillRepository.save(skillRequest);
+            }
 
-            // add and create new Skill
-            candidate.addSkill(skillRequest);
-            return skillRepository.save(skillRequest);
         }).orElseThrow(() -> new IllegalArgumentException("Not found Candidate with id = " + candidateId));
 
         return new ResponseEntity<>(skill, HttpStatus.CREATED);

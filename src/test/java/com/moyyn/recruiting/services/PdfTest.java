@@ -2,11 +2,16 @@ package com.moyyn.recruiting.services;
 
 import com.moyyn.recruiting.model.Candidate;
 import com.moyyn.recruiting.model.Skill;
+import com.moyyn.recruiting.repositories.CandidateRepository;
+import com.moyyn.recruiting.repositories.SkillRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
@@ -20,6 +25,18 @@ import java.util.StringJoiner;
 @Slf4j
 class PdfTest extends TestUtils{
 
+    @Mock
+    CandidateRepository candidateRepository;
+
+    @Mock
+    SkillRepository skillRepository;
+
+    @BeforeEach
+    public void before(){
+        MockitoAnnotations.openMocks(this);
+    }
+
+
     @Test
     void should_create_pdf() throws IOException {
         Candidate candidate = new Candidate();
@@ -27,11 +44,15 @@ class PdfTest extends TestUtils{
         candidate.setMarried(true);
         candidate.setFirstName("mickey");
         candidate.setLastName("mouse");
+
         Set<Skill> skills = new HashSet<>();
         skills.add(new Skill("java"));
         skills.add(new Skill("spring"));
         skills.add(new Skill("react"));
         candidate.setSkills(skills);
+
+        // mickey mouse :  oggetto "java", oggetto "spring", "oggetto react"
+
 
         StringJoiner joiner = new StringJoiner(",");
         for (Skill skill : skills.stream().toList()) {
@@ -39,7 +60,9 @@ class PdfTest extends TestUtils{
         }
         String skillsCommaSeparated = joiner.toString();
 
-        PDFBoxService pdfService = new PDFBoxService();
+
+
+        PDFBoxService pdfService = new PDFBoxService(null, null);
         PDDocument document = pdfService.getPersonalDocument(candidate);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);
@@ -75,7 +98,7 @@ class PdfTest extends TestUtils{
         }
         String skillsCommaSeparated = joiner.toString();
 
-        PDFBoxService pdfService = new PDFBoxService();
+        PDFBoxService pdfService = new PDFBoxService(skillRepository, candidateRepository);
         PDDocument document = pdfService.getPersonalDocument(candidate);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);
@@ -129,7 +152,7 @@ class PdfTest extends TestUtils{
         Assertions.assertEquals(3,skills.size());
     }
 
-    private static Candidate createCandidateFromFile(String first, String originalFilename) throws IOException {
+    private  Candidate createCandidateFromFile(String first, String originalFilename) throws IOException {
         Path pdfPath = Paths.get(first);
         byte[] pdf = Files.readAllBytes(pdfPath);
 
@@ -139,7 +162,7 @@ class PdfTest extends TestUtils{
         String contentType = mockFile.getContentType();
         Assertions.assertEquals("application/pdf", contentType);
 
-        PDFBoxService pdfService = new PDFBoxService();
+        PDFBoxService pdfService = new PDFBoxService(skillRepository, candidateRepository);
         Candidate candidate = pdfService.processPDF(pdfBytes);
         log.info("candidate: {}", candidate);
         return candidate;

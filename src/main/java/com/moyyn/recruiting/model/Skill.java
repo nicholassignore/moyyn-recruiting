@@ -35,17 +35,15 @@ public class Skill {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(unique=true)
+    @Column
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            },
+            cascade = {CascadeType.PERSIST,
+                    CascadeType.MERGE},
             mappedBy = "skills")
     @JsonIgnore
-    private Set<Candidate> candidates = new HashSet<>();
+    private Set<Candidate> candidates = new HashSet<>(); //<--- mickey mouse
 
     public Skill(String name) {
         this.setName(name);

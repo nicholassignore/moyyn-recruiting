@@ -7,6 +7,8 @@ import com.moyyn.recruiting.services.BotService;
 import com.moyyn.recruiting.services.CandidateService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,15 +25,15 @@ public class CandidateController {
     // POST http://localhost:8080/jackson
     // rest post that uses Jackson in spring boot to return the Candidate json
     @PostMapping("/jackson")
-    public Candidate uploadFile(@RequestParam("pdf") MultipartFile pdf) throws Exception {
+    public ResponseEntity<Candidate> uploadFile(@RequestParam("pdf") MultipartFile pdf) throws Exception {
         Candidate candidate = candidateService.convertPdfToCandidate(pdf);
-        return candidate;
+        return new ResponseEntity<>(candidate, HttpStatus.OK);
     }
 
     // rest post that uses Chatgpt  String json
     // POST http://localhost:8080//chatgpt
     @PostMapping("/chatgpt")
-    public String uploadFileChatGpt(@RequestParam("pdf") MultipartFile pdf) throws Exception {
+    public ResponseEntity<String> uploadFileChatGpt(@RequestParam("pdf") MultipartFile pdf) throws Exception {
         Candidate candidate = candidateService.convertPdfToCandidate(pdf);
 
         // prepare question for ChatGPT
@@ -40,7 +42,8 @@ public class CandidateController {
 
         // Ask chatGPT to convert Candidate to json string
         ChatGptResponse chatGptResponse = botService.askChatGpt(domanda);
-        return chatGptResponse.getChoices().get(0).getText();
+
+        return new ResponseEntity<>(chatGptResponse.getChoices().get(0).getText(), HttpStatus.OK);
     }
 
 }

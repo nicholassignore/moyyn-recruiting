@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -122,20 +123,30 @@ public class PDFBoxService {
                     } else if (line.startsWith("Married")) {
                         Boolean married = extractMarried(line);
                         candidate.setMarried(married);
-                    } else if (line.startsWith("Skills")) {
+                    } else if (line.startsWith("Skills")) {  // spring,java,react
                         List<String> skills = extractSkills(line);
+
                         Set<Skill> skillSet = new HashSet<>();
                         for (int i = 0; i < skills.size(); i++) {
-                            int finalI = i;
-                            skillSet.add(
-                                    skillRepository.findByName(skills.get(finalI))
-                                            .orElseGet(() ->  new Skill(skills.get(finalI))));
+
+                            String name = skills.get(i);
+
+                            Optional<Skill> skill = skillRepository.findByName(name);
+                            if (skill.isEmpty()){
+                                skillSet.add(new Skill(skills.get(i)));
+                            } else {
+                                Skill skilltrovato = skill.get();
+                                skillSet.add(skilltrovato);
+                            }
+
                         }
                         candidate.setSkills(skillSet);
                     }
                 }
             }
-            candidateRepository.save(candidate);
+
+            candidateRepository.save(candidate);  // save ID = NULL  vs. update ID = 32
+
             return candidate;
         }
     }
