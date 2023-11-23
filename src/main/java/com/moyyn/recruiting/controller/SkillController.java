@@ -39,11 +39,12 @@ public class SkillController {
         return new ResponseEntity<>(skills, HttpStatus.OK);
     }
 
+    /*
     @GetMapping("/bestCandidateByScore")
     public ResponseEntity<Candidate> getCandidateWithHighestScore(      ) {
 
     }
-
+*/
 
     // restituisce tutti gli skills di un candidato con ID = candidateId
     @GetMapping("/candidates/{candidateId}/skills")
