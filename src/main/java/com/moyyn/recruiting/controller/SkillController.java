@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 public class SkillController {
@@ -39,12 +43,27 @@ public class SkillController {
         return new ResponseEntity<>(skills, HttpStatus.OK);
     }
 
-    /*
-    @GetMapping("/bestCandidateByScore")
-    public ResponseEntity<Candidate> getCandidateWithHighestScore(      ) {
+    @PostMapping("/bestCandidateByScore")
+    public ResponseEntity<CandidateWithScore> getCandidateWithHighestScore(@RequestBody Skills requestedSkills) {
+        CandidateWithScore bestCandidateWithScore = null;
+        List<Candidate> all = candidateRepository.findAll();
 
+        for (int i = 0; i < all.size(); i++) {
+            Candidate candidate = all.get(i);
+            Integer candidateScore = 0;
+            Set<Skill> skills = candidate.getSkills();
+            for (Iterator<Skill> iterator = skills.iterator(); iterator.hasNext(); ) {
+                Skill skill = iterator.next();
+                if (requestedSkills.getSkills().contains(skill)) {
+                    candidateScore++;
+                }
+            }
+            if (candidateScore > 0 && candidateScore > bestCandidateWithScore.getScore()){
+                bestCandidateWithScore = new CandidateWithScore(candidate, candidateScore);
+            }
+        }
+        return new ResponseEntity<>(bestCandidateWithScore, HttpStatus.OK);
     }
-*/
 
     // restituisce tutti gli skills di un candidato con ID = candidateId
     @GetMapping("/candidates/{candidateId}/skills")
@@ -84,14 +103,13 @@ public class SkillController {
             Long skillId = skillRequest.getId();
 
             // skill is existed
-            if (skillId != null &&  skillId != 0L) {
+            if (skillId != null && skillId != 0L) {
                 Skill _skill = skillRepository.findById(skillId)
                         .orElseThrow(() -> new IllegalArgumentException("Not found Skill with id = " + skillId));
                 candidate.addSkill(_skill);
                 candidateRepository.save(candidate);
                 return _skill;
-            }
-            else {
+            } else {
                 // add and create new Skill
                 candidate.addSkill(skillRequest);
                 return skillRepository.save(skillRequest);
