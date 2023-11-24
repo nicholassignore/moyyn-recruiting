@@ -27,7 +27,6 @@ import java.util.Set;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-@ToString
 public class Skill {
 
     @Id
@@ -50,17 +49,10 @@ public class Skill {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Skill skill = (Skill) o;
-
-        return name.equals(skill.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
+    public String toString() {
+        return "Skill{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.moyyn.recruiting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +26,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@ToString
 public class Candidate {
 
     @Id
@@ -47,6 +47,7 @@ public class Candidate {
     @JoinTable(name = "candidate_skills",
             joinColumns = { @JoinColumn(name = "candidate_id") },
             inverseJoinColumns = { @JoinColumn(name = "skill_id") })
+    @JsonIgnore
     private Set<Skill> skills = new HashSet<>();
 
 
@@ -61,5 +62,18 @@ public class Candidate {
             this.skills.remove(skill);
             skill.getCandidates().remove(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Candidate{" +
+                "id=" + id +
+                ", fileName='" + fileName + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", married=" + married +
+                '}';
     }
 }

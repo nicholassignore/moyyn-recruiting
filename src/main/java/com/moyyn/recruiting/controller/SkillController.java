@@ -2,8 +2,10 @@ package com.moyyn.recruiting.controller;
 
 import com.moyyn.recruiting.model.Candidate;
 import com.moyyn.recruiting.model.Skill;
+import com.moyyn.recruiting.model.Skills;
 import com.moyyn.recruiting.repositories.CandidateRepository;
 import com.moyyn.recruiting.repositories.SkillRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.Set;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+@Slf4j
 @RestController
 public class SkillController {
 
@@ -45,20 +48,35 @@ public class SkillController {
 
     @PostMapping("/bestCandidateByScore")
     public ResponseEntity<CandidateWithScore> getCandidateWithHighestScore(@RequestBody Skills requestedSkills) {
+
+        log.info("requestedSkills : {} ", requestedSkills.toString());
+
         CandidateWithScore bestCandidateWithScore = null;
         List<Candidate> all = candidateRepository.findAll();
 
         for (int i = 0; i < all.size(); i++) {
             Candidate candidate = all.get(i);
+
+            log.info("candidate.getFirstName() : {} ", candidate.getFirstName());
+            log.info("candidate skills: {} ", candidate.getSkills());
+
             Integer candidateScore = 0;
+
             Set<Skill> skills = candidate.getSkills();
+
             for (Iterator<Skill> iterator = skills.iterator(); iterator.hasNext(); ) {
                 Skill skill = iterator.next();
-                if (requestedSkills.getSkills().contains(skill)) {
+
+                log.info("skill.getName() : {} ", skill.getName());
+
+                if (requestedSkills.getSkills().contains(skill.getName())) {
                     candidateScore++;
                 }
             }
-            if (candidateScore > 0 && candidateScore > bestCandidateWithScore.getScore()){
+
+            if (candidateScore > 0 && bestCandidateWithScore == null){
+                bestCandidateWithScore = new CandidateWithScore(candidate, candidateScore);
+            } else if (candidateScore > 0 && candidateScore > bestCandidateWithScore.getScore()){
                 bestCandidateWithScore = new CandidateWithScore(candidate, candidateScore);
             }
         }

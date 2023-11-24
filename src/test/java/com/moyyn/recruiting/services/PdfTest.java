@@ -37,8 +37,7 @@ class PdfTest extends TestUtils{
     }
 
 
-    @Test
-    void should_create_pdf() throws IOException {
+    void should_create_mickey_pdf() throws IOException {
         Candidate candidate = new Candidate();
         candidate.setAge(25);
         candidate.setMarried(true);
@@ -78,8 +77,6 @@ class PdfTest extends TestUtils{
         Assertions.assertEquals(expected, text, "Extracted text was not as expected");
     }
 
-
-    @Test
     void should_create_goofy_pdf() throws IOException {
         Candidate candidate = new Candidate();
         candidate.setAge(25);
@@ -88,8 +85,8 @@ class PdfTest extends TestUtils{
         candidate.setLastName("goofy");
         Set<Skill> skills = new HashSet<>();
         skills.add(new Skill("java"));
-        skills.add(new Skill("spring"));
-        skills.add(new Skill("react"));
+        skills.add(new Skill("play"));
+        skills.add(new Skill("angular"));
         candidate.setSkills(skills);
 
         StringJoiner joiner = new StringJoiner(",");
@@ -119,6 +116,7 @@ class PdfTest extends TestUtils{
     @Test
     void should_process_pdf_file() throws IOException {
 
+        should_create_mickey_pdf();
         String first = "src/test/resources/mickeymouse.pdf";
         String originalFilename = "mickeymouse.pdf";
 
@@ -137,6 +135,7 @@ class PdfTest extends TestUtils{
     @Test
     void should_process_pdf_file_2() throws IOException {
 
+        should_create_goofy_pdf();
         String first = "src/test/resources/goofy.pdf";
         String originalFilename = "goofy.pdf";
 
