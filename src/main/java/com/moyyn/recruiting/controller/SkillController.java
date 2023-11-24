@@ -56,10 +56,8 @@ public class SkillController {
 
         for (int i = 0; i < all.size(); i++) {
             Candidate candidate = all.get(i);
-
             log.info("candidate.getFirstName() : {} ", candidate.getFirstName());
             log.info("candidate skills: {} ", candidate.getSkills());
-
             Integer candidateScore = 0;
 
             Set<Skill> skills = candidate.getSkills();

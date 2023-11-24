@@ -70,3 +70,10 @@ ChatGPT will respond back with the equivalent JSON
 The name of this example is composed only by first and last name. SOme changes are required if the name is composed on more than one word: in this case we need to concatenate the names into ine single string.  Not really critical for this example. 
 
 For instance:  Nicholas Santos Signore. 
+
+
+## DEMO
+
+1. far partire la app 
+2. val alla pagina uploadFile.hml, run in intellij e carica goofy.pdf e mickeymouse.pdf
+3. Postman ed import il workspace sotto test/resources
