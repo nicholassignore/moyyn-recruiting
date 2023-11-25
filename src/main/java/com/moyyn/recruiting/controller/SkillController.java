@@ -72,6 +72,7 @@ public class SkillController {
                 }
             }
 
+
             if (candidateScore > 0 && bestCandidateWithScore == null){
                 bestCandidateWithScore = new CandidateWithScore(candidate, candidateScore);
             } else if (candidateScore > 0 && candidateScore > bestCandidateWithScore.getScore()){
