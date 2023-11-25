@@ -10,5 +10,4 @@ public class Skills {
 
     private Set<String> skills = new HashSet<>();
 
-
 }
