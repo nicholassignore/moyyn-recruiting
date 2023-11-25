@@ -59,6 +59,21 @@ $ curl https://api.openai.com/v1/chat/completions \
 "messages": [{"role": "user", "content": "can you translate the string \"Candidate(fileName=file, fileType=application/pdf, firstName=mickey, lastName=mouse, age=25, married=true, skills=[java, spring, react])\" to a json string ?"}]
 }'
 
+$ curl https://api.openai.com/v1/chat/completions \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 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" \
+-d '{
+"model": "gpt-3.5-turbo",
+"messages": [{"role": "user", "content": "can you translate the string \"Candidate(fileName=file, fileType=application/pdf, firstName=mickey, lastName=mouse, age=25, married=true, skills=[java, spring, react])\" to a json string ?"}]
+}'
+
+    - POST http://localhost:8080//chatgpt to:
+        upload a PDF file da HTML, 
+        extract the values, 
+        format a Candidate.java bean
+        call chatGPT passing the candidate.toString() value which will return it in JSON format and returned as String to the HTTP post caller
+
+
 
 The string embeddded in the message is the java candidate.toString() string. 
 
@@ -77,3 +92,5 @@ For instance:  Nicholas Santos Signore.
 1. far partire la app 
 2. val alla pagina uploadFile.hml, run in intellij e carica goofy.pdf e mickeymouse.pdf
 3. Postman ed import il workspace sotto test/resources
+
+
